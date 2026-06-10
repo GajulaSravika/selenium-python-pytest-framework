@@ -1,5 +1,6 @@
 import pytest
 from selenium import webdriver
+from datetime import datetime
 def pytest_addoption(parser):
         parser.addoption(
             "--browser_name", action="store", default="chrome", help="run slow tests"
@@ -18,3 +19,18 @@ def driver(request):
     driver.get("https://www.saucedemo.com/")
     yield driver
     driver.quit()
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+
+    outcome = yield
+    report = outcome.get_result()
+
+    if report.when == "call" and report.failed:
+
+        driver = item.funcargs["driver"]
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        driver.save_screenshot(
+            f"Screenshots/{item.name}_{timestamp}.png"
+        )

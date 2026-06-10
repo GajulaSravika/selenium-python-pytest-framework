@@ -13,5 +13,5 @@ def test_end_to_end(driver):
     checkout_page.checkout()
     address_page=Address(driver)
     address_page.address_info("John","Doe","12345")
-    assert address_page.verify_info()=="Thank you for your order!"
+    assert address_page.verify_info()=="wrong information"
 
